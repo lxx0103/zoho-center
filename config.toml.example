@@ -1,0 +1,44 @@
+[application]
+    name = "zoho-center"
+    api_uri = "/api/v1"
+    type = "job"
+
+[log]    
+    level = "debug" 
+    encoding = "json"
+    output = "../log/zoho-center.log"
+    
+[web]
+    host = "0.0.0.0"
+    port = 8080
+
+[database]
+    host = "192.168.13.71"
+    port = 3306
+    user = "asdf"
+    password = "asdf"
+    dbname = "zoho-asdf"
+
+[auth]
+    secret = "zoho-asdf"
+
+[zoho]
+    client_code = "aaa"
+    client_id = "1000.7aa"
+    client_secret = "ss"
+    redirect_uri = "http://s"
+    refresh_token = "1000.s.d"
+    token_uri = "https://accounts.zoho.com.au/oauth/v2/token"
+
+# [queue]
+#     host = "192.168.13.71"
+#     port = 5672
+#     user = "asdf"
+#     password = "asdf"
+#     exchange = "zoho-asdf"
+
+# [cache]
+#     host = "192.168.13.71:6379"
+#     password = ""
+#     db = 2
+#     expiration = 3600
