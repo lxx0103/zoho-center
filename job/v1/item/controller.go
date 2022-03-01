@@ -12,7 +12,20 @@ func GetItemList() {
 		return
 	}
 	itemService := NewItemService()
-	hasMorePage, err := itemService.GetItemList(token, 1)
+	hasMorePage, new, err := itemService.GetItemList(token, 1)
 	fmt.Println(hasMorePage)
 	fmt.Println(err)
+
+	for i := 0; i < len(*new); i++ {
+		token, err := auth.GetCode()
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		err = itemService.UpdateItem(token, (*new)[i])
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+	}
 }
