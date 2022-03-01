@@ -11,5 +11,8 @@ func GetItemList() {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Println(token)
+	itemService := NewItemService()
+	hasMorePage, err := itemService.GetItemList(token, 1)
+	fmt.Println(hasMorePage)
+	fmt.Println(err)
 }

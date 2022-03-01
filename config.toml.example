@@ -29,6 +29,7 @@
     redirect_uri = "http://s"
     refresh_token = "1000.s.d"
     token_uri = "https://accounts.zoho.com.au/oauth/v2/token"
+    item_uri = "https://inventory.zoho.com.au/api/v1/items"
 
 # [queue]
 #     host = "192.168.13.71"

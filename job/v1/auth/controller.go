@@ -1,8 +1,8 @@
 package auth
 
 func GetCode() (string, error) {
-	tokenService := NewAuthService()
-	token, err := tokenService.GetToken()
+	authService := NewAuthService()
+	token, err := authService.GetToken()
 	if err != nil {
 		return "", err
 	}
