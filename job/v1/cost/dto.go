@@ -1,12 +1,12 @@
 package cost
 
 type ItemLog struct {
-	ID       int64 `db:"log_id"`
-	Quantity int   `db:"quantity"`
+	ID       int64   `db:"log_id"`
+	Quantity float64 `db:"quantity"`
 }
 
 type ItemCost struct {
 	ID      int64   `db:"cost_id"`
-	Balance int     `db:"balance"`
+	Balance float64 `db:"balance"`
 	Rate    float64 `db:"rate"`
 }

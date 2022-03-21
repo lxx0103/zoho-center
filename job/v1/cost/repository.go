@@ -25,7 +25,7 @@ type CostRepository interface {
 	InsertInvoiceLog(string) error
 	GetLogs() (*[]ItemLog, error)
 	GetFirstCost() (*ItemCost, error)
-	UpdateCost(int64, int) error
+	UpdateCost(int64, float64) error
 	UpdateLog(int64, float64) error
 	UpdateInvoiceItemCost() error
 	UpdateInvoiceCost() error
@@ -196,7 +196,7 @@ func (r *costRepository) GetFirstCost() (*ItemCost, error) {
 	return &res, err
 }
 
-func (r *costRepository) UpdateCost(costID int64, quantity int) error {
+func (r *costRepository) UpdateCost(costID int64, quantity float64) error {
 	_, err := r.tx.Exec(`	
 	UPDATE item_costs SET 
 	balance = balance - ? 

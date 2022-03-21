@@ -107,8 +107,7 @@ func itemCalculate(itemID string) error {
 	for j := 0; j < len(*logs); j++ {
 		// for j := 0; j < 5; j++ {
 		fmt.Println((*logs)[j])
-		var remainQty int
-		var nowTotalCost float64
+		var remainQty, nowTotalCost float64
 		remainQty = (*logs)[j].Quantity
 		nowTotalCost = 0
 		for remainQty > 0 {
