@@ -38,6 +38,19 @@ func (s costService) Calculate() error {
 			return err
 		}
 	}
+	tx2, err := db.Begin()
+	if err != nil {
+		msg := "事务开启错误:" + err.Error()
+		return errors.New(msg)
+	}
+	defer tx2.Rollback()
+	repo2 := NewCostRepository(tx2)
+	err = repo2.UpdateInvoiceCost()
+	if err != nil {
+		msg := "更新Invoice成本错误:" + err.Error()
+		return errors.New(msg)
+	}
+	tx2.Commit()
 	return nil
 	// return false, nil
 }
@@ -129,6 +142,11 @@ func itemCalculate(itemID string) error {
 			msg := "更新LOG错误:" + err.Error()
 			return errors.New(msg)
 		}
+	}
+	err = repo.UpdateInvoiceItemCost()
+	if err != nil {
+		msg := "更新InvoiceItem成本错误:" + err.Error()
+		return errors.New(msg)
 	}
 	tx.Commit()
 	return nil

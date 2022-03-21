@@ -27,11 +27,14 @@ type CostRepository interface {
 	GetFirstCost() (*ItemCost, error)
 	UpdateCost(int64, int) error
 	UpdateLog(int64, float64) error
+	UpdateInvoiceItemCost() error
+	UpdateInvoiceCost() error
 }
 
 func (r *costRepository) GetItems() (*[]string, error) {
 	var res []string
-	rows, err := r.tx.Query(`SELECT item_id FROM items WHERE status = ? AND item_id = '8581000000118263'`, "active")
+	// rows, err := r.tx.Query(`SELECT item_id FROM items WHERE 1 = 1 AND status = ? AND item_id = '8581000000118263'`, "active")
+	rows, err := r.tx.Query(`SELECT item_id FROM items `)
 	if err != nil {
 		return nil, err
 	}
@@ -207,5 +210,25 @@ func (r *costRepository) UpdateLog(logID int64, total float64) error {
 	status = 1,
 	cost = ?/quantity
 	WHERE log_id = ?`, total, logID)
+	return err
+}
+
+func (r *costRepository) UpdateInvoiceItemCost() error {
+	_, err := r.tx.Exec(`	
+	UPDATE item_logs il 
+	LEFT JOIN invoice_items ii
+	ON il.reference_id = ii.invoice_id 
+	AND il.item_id = ii.item_id 
+	SET ii.cost = il.cost 
+	WHERE il.type = "invoice"`)
+	return err
+}
+
+func (r *costRepository) UpdateInvoiceCost() error {
+	_, err := r.tx.Exec(`	
+	UPDATE invoices i ,
+	(SELECT invoice_id, SUM(cost*quantity) AS cost FROM invoice_items GROUP BY invoice_id) s
+	SET i.cost = s.cost 
+	WHERE i.invoice_id = s.invoice_id`)
 	return err
 }
