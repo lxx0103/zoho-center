@@ -112,8 +112,10 @@ func itemCalculate(itemID string) error {
 		nowTotalCost = 0
 		for remainQty > 0 {
 			firstCost, err := repo.GetFirstCost()
-			fmt.Println(firstCost)
 			if err != nil {
+				if err.Error() == "sql: no rows in result set" {
+					break
+				}
 				msg := "获取COST错误:" + err.Error()
 				return errors.New(msg)
 			}
