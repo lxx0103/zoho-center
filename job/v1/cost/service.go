@@ -2,7 +2,6 @@ package cost
 
 import (
 	"errors"
-	"fmt"
 	"zoho-center/core/database"
 )
 
@@ -106,7 +105,7 @@ func itemCalculate(itemID string) error {
 	}
 	for j := 0; j < len(*logs); j++ {
 		// for j := 0; j < 5; j++ {
-		fmt.Println((*logs)[j])
+		// fmt.Println((*logs)[j])
 		var remainQty, nowTotalCost float64
 		remainQty = (*logs)[j].Quantity
 		nowTotalCost = 0
@@ -137,7 +136,7 @@ func itemCalculate(itemID string) error {
 				remainQty = remainQty - firstCost.Balance
 			}
 		}
-		fmt.Println(nowTotalCost)
+		// fmt.Println(nowTotalCost)
 		err := repo.UpdateLog((*logs)[j].ID, nowTotalCost)
 		if err != nil {
 			msg := "更新LOG错误:" + err.Error()

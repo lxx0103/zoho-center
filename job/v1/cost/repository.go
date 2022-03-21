@@ -219,7 +219,7 @@ func (r *costRepository) UpdateInvoiceItemCost() error {
 	LEFT JOIN invoice_items ii
 	ON il.reference_id = ii.invoice_id 
 	AND il.item_id = ii.item_id 
-	SET ii.cost = il.cost 
+	SET ii.cost = round(il.cost, 2)
 	WHERE il.type = "invoice"`)
 	return err
 }
@@ -228,7 +228,7 @@ func (r *costRepository) UpdateInvoiceCost() error {
 	_, err := r.tx.Exec(`	
 	UPDATE invoices i ,
 	(SELECT invoice_id, SUM(cost*quantity) AS cost FROM invoice_items GROUP BY invoice_id) s
-	SET i.cost = s.cost 
+	SET i.cost = rount(s.cost, 2) 
 	WHERE i.invoice_id = s.invoice_id`)
 	return err
 }
