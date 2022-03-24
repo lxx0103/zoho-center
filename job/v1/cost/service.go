@@ -104,8 +104,6 @@ func itemCalculate(itemID string) error {
 		return errors.New(msg)
 	}
 	for j := 0; j < len(*logs); j++ {
-		// for j := 0; j < 5; j++ {
-		// fmt.Println((*logs)[j])
 		var remainQty, nowTotalCost float64
 		remainQty = (*logs)[j].Quantity
 		nowTotalCost = 0
@@ -113,12 +111,15 @@ func itemCalculate(itemID string) error {
 			firstCost, err := repo.GetFirstCost()
 			if err != nil {
 				if err.Error() == "sql: no rows in result set" {
+					// fmt.Println("norow")
 					break
 				}
 				msg := "获取COST错误:" + err.Error()
 				return errors.New(msg)
 			}
-			if firstCost.Balance >= (*logs)[j].Quantity {
+			// fmt.Println((*logs)[j].ID, "-", (*logs)[j].Quantity, "=", remainQty, ":", firstCost.ID, ",", firstCost.Balance)
+			// fmt.Println(firstCost.Balance, ",", (*logs)[j].Quantity)
+			if firstCost.Balance >= remainQty {
 				err = repo.UpdateCost(firstCost.ID, remainQty)
 				if err != nil {
 					msg := "扣除Balance错误:" + err.Error()

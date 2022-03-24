@@ -33,7 +33,7 @@ type CostRepository interface {
 
 func (r *costRepository) GetItems() (*[]string, error) {
 	var res []string
-	// rows, err := r.tx.Query(`SELECT item_id FROM items WHERE 1 = 1 AND status = ? AND item_id = '8581000000118263'`, "active")
+	// rows, err := r.tx.Query(`SELECT item_id FROM items WHERE 1 = 1 AND status = ? AND item_id = '8581000000120257'`, "active")
 	rows, err := r.tx.Query(`SELECT item_id FROM items `)
 	if err != nil {
 		return nil, err
