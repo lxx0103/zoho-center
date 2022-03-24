@@ -228,7 +228,7 @@ func (r *costRepository) UpdateInvoiceCost() error {
 	_, err := r.tx.Exec(`	
 	UPDATE invoices i ,
 	(SELECT invoice_id, SUM(cost*quantity) AS cost FROM invoice_items GROUP BY invoice_id) s
-	SET i.cost = rount(s.cost, 2) 
+	SET i.cost = round(s.cost, 2) 
 	WHERE i.invoice_id = s.invoice_id`)
 	return err
 }
