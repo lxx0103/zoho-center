@@ -29,6 +29,7 @@ type CostRepository interface {
 	UpdateLog(int64, float64) error
 	UpdateInvoiceItemCost() error
 	UpdateInvoiceCost() error
+	UpdateInvoiceCredit() error
 }
 
 func (r *costRepository) GetItems() (*[]string, error) {
@@ -232,5 +233,20 @@ func (r *costRepository) UpdateInvoiceCost() error {
 	(SELECT invoice_id, SUM(cost*quantity) AS cost FROM invoice_items GROUP BY invoice_id) s
 	SET i.cost = round(s.cost, 2) 
 	WHERE i.invoice_id = s.invoice_id`)
+	return err
+}
+
+func (r *costRepository) UpdateInvoiceCredit() error {
+	_, err := r.tx.Exec(`
+		UPDATE invoices i 
+		INNER JOIN 
+		(
+			SELECT invoice_id ,sum(total) as credits  FROM creditnotes 
+			WHERE invoice_id != ''
+			GROUP by invoice_id
+		) t  
+		ON i.invoice_id  = t.invoice_id 
+		SET i.cost =  (i.cost * (i.total -t.credits)/i.total)
+	`)
 	return err
 }

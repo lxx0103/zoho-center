@@ -49,6 +49,11 @@ func (s costService) Calculate() error {
 		msg := "更新Invoice成本错误:" + err.Error()
 		return errors.New(msg)
 	}
+	err = repo2.UpdateInvoiceCredit()
+	if err != nil {
+		msg := "更新Invoice Creditnote错误:" + err.Error()
+		return errors.New(msg)
+	}
 	tx2.Commit()
 	return nil
 	// return false, nil
