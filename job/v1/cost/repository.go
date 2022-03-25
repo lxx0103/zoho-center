@@ -129,6 +129,7 @@ func (r *costRepository) InsertAdjustmentCost(itemID string) error {
 	LEFT JOIN adjustments a 
 	ON a.inventory_adjustment_id  = ai.inventory_adjustment_id 
 	WHERE ai.item_id = ?
+	AND a.status = 'adjusted'
 	AND ai.quantity_adjusted > 0`, itemID)
 	return err
 }
@@ -148,6 +149,7 @@ func (r *costRepository) InsertAdjustmentLog(itemID string) error {
 	LEFT JOIN adjustments a 
 	ON a.inventory_adjustment_id  = ai.inventory_adjustment_id 
 	WHERE ai.item_id = ?
+	AND a.status = 'adjusted'
 	AND ai.quantity_adjusted < 0
 	ORDER BY a.date ASC`, itemID)
 	return err
