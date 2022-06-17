@@ -6,7 +6,7 @@ import (
 	"zoho-center/core/database"
 	"zoho-center/core/log"
 	"zoho-center/core/router"
-	"zoho-center/job/v1/cost"
+	"zoho-center/job/v1/salesorder"
 )
 
 func Run(args []string) {
@@ -23,7 +23,7 @@ func Run(args []string) {
 		// router.InitAuthRouter(r, organization.Routers, project.Routers, event.Routers, component.Routers, auth.AuthRouter, client.Routers, position.Routers)
 		router.RunServer(r)
 	} else if runType == "job" {
-		cost.Calculate()
+		salesorder.GetSalesorderList()
 	} else {
 		fmt.Println("type error")
 	}

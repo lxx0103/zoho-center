@@ -3,6 +3,7 @@ package auth
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 )
 
 type authRepository struct {
@@ -50,6 +51,7 @@ type AuthRepository interface {
 
 func (r *authRepository) GetTokenByCode(code string) (*Token, error) {
 	var res Token
+	fmt.Println("-----", code, "-------")
 	row := r.tx.QueryRow(`SELECT id, code, access_token, api_domain, token_type, expires_time FROM tokens WHERE code = ? LIMIT 1`, code)
 	err := row.Scan(&res.ID, &res.Code, &res.AccessToken, &res.ApiDomain, &res.TokenType, &res.ExpiresTime)
 	if err != nil {
