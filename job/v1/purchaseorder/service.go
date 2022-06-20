@@ -1,4 +1,4 @@
-package salesorder
+package purchaseorder
 
 import (
 	"encoding/json"
@@ -13,21 +13,21 @@ import (
 	"zoho-center/core/queue"
 )
 
-type salesorderService struct {
+type purchaseorderService struct {
 }
 
-func NewSalesorderService() SalesorderService {
-	return &salesorderService{}
+func NewPurchaseorderService() PurchaseorderService {
+	return &purchaseorderService{}
 }
 
-type SalesorderService interface {
-	GetSalesorderList(string, int) (bool, *[]string, error)
-	UpdateSalesorder(string, string) error
+type PurchaseorderService interface {
+	GetPurchaseorderList(string, int) (bool, *[]string, error)
+	UpdatePurchaseorder(string, string) error
 }
 
-func (s salesorderService) GetSalesorderList(token string, page int) (bool, *[]string, error) {
+func (s purchaseorderService) GetPurchaseorderList(token string, page int) (bool, *[]string, error) {
 	var res []string
-	url := config.ReadConfig("zoho.salesorder_uri")
+	url := config.ReadConfig("zoho.purchaseorder_uri")
 	auth := "Zoho-oauthtoken " + token
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -49,13 +49,13 @@ func (s salesorderService) GetSalesorderList(token string, page int) (bool, *[]s
 	if err != nil {
 		return false, nil, err
 	}
-	var salesorderList ZohoSalesorderList
-	err = json.Unmarshal(body, &salesorderList)
+	var purchaseorderList ZohoPurchaseorderList
+	err = json.Unmarshal(body, &purchaseorderList)
 	if err != nil {
 		return false, nil, err
 	}
-	if salesorderList.Code != 0 {
-		msg := "状态码错误:" + fmt.Sprint(salesorderList.Code) + salesorderList.Message
+	if purchaseorderList.Code != 0 {
+		msg := "状态码错误:" + fmt.Sprint(purchaseorderList.Code) + purchaseorderList.Message
 		return false, nil, errors.New(msg)
 	}
 	db := database.InitMySQL()
@@ -65,9 +65,9 @@ func (s salesorderService) GetSalesorderList(token string, page int) (bool, *[]s
 		return false, nil, errors.New(msg)
 	}
 	defer tx.Rollback()
-	repo := NewSalesorderRepository(tx)
-	for i := 0; i < len(salesorderList.Salesorders); i++ {
-		lastModifiedTime, err := repo.GetZohoUpdated(salesorderList.Salesorders[i].SalesorderID)
+	repo := NewPurchaseorderRepository(tx)
+	for i := 0; i < len(purchaseorderList.Purchaseorders); i++ {
+		lastModifiedTime, err := repo.GetZohoUpdated(purchaseorderList.Purchaseorders[i].PurchaseorderID)
 		if err != nil {
 			if err.Error() == "sql: no rows in result set" {
 				*lastModifiedTime, _ = time.Parse(time.RFC3339, "2000-01-01 00:00:00+0800")
@@ -75,20 +75,20 @@ func (s salesorderService) GetSalesorderList(token string, page int) (bool, *[]s
 				return false, nil, err
 			}
 		}
-		newModifiedTime, _ := time.Parse(time.RFC3339, strings.Replace(strings.Replace(salesorderList.Salesorders[i].LastModifiedTime, " ", "T", 1), "+0800", "+08:00", 1))
+		newModifiedTime, _ := time.Parse(time.RFC3339, strings.Replace(strings.Replace(purchaseorderList.Purchaseorders[i].LastModifiedTime, " ", "T", 1), "+0800", "+08:00", 1))
 		if lastModifiedTime.Before(newModifiedTime) {
-			res = append(res, salesorderList.Salesorders[i].SalesorderID)
+			res = append(res, purchaseorderList.Purchaseorders[i].PurchaseorderID)
 		}
 	}
-	return salesorderList.Page.HasMorePage, &res, nil
+	return purchaseorderList.Page.HasMorePage, &res, nil
 	// return false, nil
 }
 
-func (s salesorderService) UpdateSalesorder(token string, salesorderID string) error {
-	salesorderID = "8581000024483651"
+func (s purchaseorderService) UpdatePurchaseorder(token string, purchaseorderID string) error {
+	purchaseorderID = "8581000024488308"
 	duration := time.Duration(3) * time.Second
 	time.Sleep(duration)
-	url := config.ReadConfig("zoho.salesorder_uri") + salesorderID
+	url := config.ReadConfig("zoho.purchaseorder_uri") + purchaseorderID
 	auth := "Zoho-oauthtoken " + token
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -108,13 +108,13 @@ func (s salesorderService) UpdateSalesorder(token string, salesorderID string) e
 	if err != nil {
 		return err
 	}
-	var salesorderDetail ZohoSalesorderDetail
-	err = json.Unmarshal([]byte(body), &salesorderDetail)
+	var purchaseorderDetail ZohoPurchaseorderDetail
+	err = json.Unmarshal([]byte(body), &purchaseorderDetail)
 	if err != nil {
 		return err
 	}
-	if salesorderDetail.Code != 0 {
-		msg := "状态码错误:" + fmt.Sprint(salesorderDetail.Code) + salesorderDetail.Message
+	if purchaseorderDetail.Code != 0 {
+		msg := "状态码错误:" + fmt.Sprint(purchaseorderDetail.Code) + purchaseorderDetail.Message
 		return errors.New(msg)
 	}
 	db := database.InitMySQL()
@@ -124,17 +124,17 @@ func (s salesorderService) UpdateSalesorder(token string, salesorderID string) e
 		return errors.New(msg)
 	}
 	defer tx.Rollback()
-	repo := NewSalesorderRepository(tx)
+	repo := NewPurchaseorderRepository(tx)
 
-	_, err = repo.GetZohoUpdated(salesorderDetail.Salesorder.SalesorderID)
+	_, err = repo.GetZohoUpdated(purchaseorderDetail.Purchaseorder.PurchaseorderID)
 	if err != nil {
 		if err.Error() == "sql: no rows in result set" {
-			err = repo.AddSalesorder(salesorderDetail.Salesorder)
+			err = repo.AddPurchaseorder(purchaseorderDetail.Purchaseorder)
 			if err != nil {
 				return err
 			}
-			for _, salesorderItem := range salesorderDetail.Salesorder.Items {
-				err = repo.AddSalesorderItem(salesorderDetail.Salesorder, salesorderItem)
+			for _, purchaseorderItem := range purchaseorderDetail.Purchaseorder.Items {
+				err = repo.AddPurchaseorderItem(purchaseorderDetail.Purchaseorder, purchaseorderItem)
 				if err != nil {
 					return err
 				}
@@ -143,15 +143,15 @@ func (s salesorderService) UpdateSalesorder(token string, salesorderID string) e
 			return err
 		}
 	} else {
-		err = repo.UpdateSalesorder(salesorderDetail.Salesorder)
+		err = repo.UpdatePurchaseorder(purchaseorderDetail.Purchaseorder)
 		if err != nil {
 			return err
 		}
-		for _, salesorderItem := range salesorderDetail.Salesorder.Items {
-			count, err := repo.GetSalesorderItem(salesorderItem.SalesorderItemID)
+		for _, purchaseorderItem := range purchaseorderDetail.Purchaseorder.Items {
+			count, err := repo.GetPurchaseorderItem(purchaseorderItem.PurchaseorderItemID)
 			if err != nil {
 				if count == 0 {
-					err = repo.AddSalesorderItem(salesorderDetail.Salesorder, salesorderItem)
+					err = repo.AddPurchaseorderItem(purchaseorderDetail.Purchaseorder, purchaseorderItem)
 					if err != nil {
 						return err
 					}
@@ -159,7 +159,7 @@ func (s salesorderService) UpdateSalesorder(token string, salesorderID string) e
 					return err
 				}
 			} else {
-				err = repo.UpdateSalesorderItem(salesorderItem)
+				err = repo.UpdatePurchaseorderItem(purchaseorderItem)
 				if err != nil {
 					return err
 				}
@@ -168,8 +168,8 @@ func (s salesorderService) UpdateSalesorder(token string, salesorderID string) e
 	}
 
 	rabbit, _ := queue.GetConn()
-	msg, _ := json.Marshal(salesorderDetail.Salesorder)
-	err = rabbit.Publish("SalesOrderUpdated", msg)
+	msg, _ := json.Marshal(purchaseorderDetail.Purchaseorder)
+	err = rabbit.Publish("PurchaseOrderUpdated", msg)
 	if err != nil {
 		return err
 	}

@@ -1,18 +1,18 @@
-package salesorder
+package purchaseorder
 
 import (
 	"fmt"
 	"zoho-center/job/v1/auth"
 )
 
-func GetSalesorderList() {
+func GetPurchaseorderList() {
 	token, err := auth.GetCode()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	salesorderService := NewSalesorderService()
-	hasMorePage, new, err := salesorderService.GetSalesorderList(token, 1)
+	purchaseorderService := NewPurchaseorderService()
+	hasMorePage, new, err := purchaseorderService.GetPurchaseorderList(token, 1)
 	fmt.Println(hasMorePage)
 	fmt.Println(err)
 
@@ -22,7 +22,7 @@ func GetSalesorderList() {
 			fmt.Println(err.Error())
 			return
 		}
-		err = salesorderService.UpdateSalesorder(token, (*new)[i])
+		err = purchaseorderService.UpdatePurchaseorder(token, (*new)[i])
 		if err != nil {
 			fmt.Println(err.Error())
 			return
