@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 	"zoho-center/core/config"
 	"zoho-center/core/database"
 	"zoho-center/core/event"
@@ -15,7 +16,6 @@ func Run(args []string) {
 	config.LoadConfig(args[1])
 	log.ConfigLogger()
 	// cache.ConfigCache()
-	event.Subscribe(salesorder.Subscribe)
 	database.ConfigMysql()
 	runType := config.ReadConfig("application.type")
 	fmt.Println(runType)
@@ -25,9 +25,12 @@ func Run(args []string) {
 		// router.InitAuthRouter(r, organization.Routers, project.Routers, event.Routers, component.Routers, auth.AuthRouter, client.Routers, position.Routers)
 		router.RunServer(r)
 	} else if runType == "job" {
-		purchaseorder.GetPurchaseorderList()
+		// purchaseorder.GetPurchaseorderList()
 	} else {
 		fmt.Println("type error")
 	}
+	event.Subscribe(purchaseorder.Subscribe, salesorder.Subscribe)
+	duration := time.Duration(100) * time.Second
+	time.Sleep(duration)
 
 }

@@ -24,6 +24,7 @@ type SalesorderRepository interface {
 	AddSalesorderItem(SalesorderUpdate, SalesorderItemUpdate) error
 	UpdateSalesorderItem(SalesorderItemUpdate) error
 	GetSalesorderItem(string) (int, error)
+	GetSalesorderItemID(string, string) (string, error)
 }
 
 func (r *salesorderRepository) GetZohoUpdated(zohoID string) (*time.Time, error) {
@@ -153,4 +154,11 @@ func (r *salesorderRepository) UpdateSalesorderItem(item SalesorderItemUpdate) e
 		return errors.New(msg)
 	}
 	return nil
+}
+
+func (r *salesorderRepository) GetSalesorderItemID(soID, sku string) (string, error) {
+	var res string
+	row := r.tx.QueryRow(`SELECT zoho_id FROM salesorder_items WHERE salesorder_id = ? AND sku = ? LIMIT 1`, soID, sku)
+	err := row.Scan(&res)
+	return res, err
 }

@@ -145,9 +145,9 @@ func (r *purchaseorderRepository) UpdatePurchaseorderItem(item PurchaseorderItem
 	return nil
 }
 
-func (r *purchaseorderRepository) GetPurchaseorderItemID(poID, itemID string) (string, error) {
+func (r *purchaseorderRepository) GetPurchaseorderItemID(poID, sku string) (string, error) {
 	var res string
-	row := r.tx.QueryRow(`SELECT zoho_id FROM purchaseorder_items WHERE purchaseorder_id = ? AND item_id = ? LIMIT 1`, poID, itemID)
+	row := r.tx.QueryRow(`SELECT zoho_id FROM purchaseorder_items WHERE purchaseorder_id = ? AND sku = ? LIMIT 1`, poID, sku)
 	err := row.Scan(&res)
 	return res, err
 }
