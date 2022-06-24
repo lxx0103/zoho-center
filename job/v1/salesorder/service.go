@@ -85,7 +85,6 @@ func (s salesorderService) GetSalesorderList(token string, page int) (bool, *[]s
 }
 
 func (s salesorderService) UpdateSalesorder(token string, salesorderID string) error {
-	salesorderID = "8581000024483651"
 	duration := time.Duration(3) * time.Second
 	time.Sleep(duration)
 	url := config.ReadConfig("zoho.salesorder_uri") + salesorderID

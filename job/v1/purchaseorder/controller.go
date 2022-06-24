@@ -30,3 +30,14 @@ func GetPurchaseorderList() {
 		break
 	}
 }
+
+func GetPurchaseorderListTest() {
+	token, err := auth.GetCode()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	purchaseorderService := NewPurchaseorderService()
+	purchaseorderService.UpdatePurchaseorder(token, "8581000024483597")
+	purchaseorderService.UpdatePurchaseorder(token, "8581000024488308")
+}

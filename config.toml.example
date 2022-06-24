@@ -31,13 +31,16 @@
     token_uri = "https://accounts.zoho.com.au/oauth/v2/token"
     item_uri = "https://inventory.zoho.com.au/api/v1/items"
     salesorder_uri = "https://inventory.zoho.com.au/api/v1/salesorders/"
+    purchaseorder_uri = "https://inventory.zoho.com.au/api/v1/purchaseorders/"
+    receive_uri = "https://inventory.zoho.com.au/api/v1/purchasereceives/"
+    package_uri = "https://inventory.zoho.com.au/api/v1/packages/"
 
-# [queue]
-#     host = "192.168.13.71"
-#     port = 5672
-#     user = "asdf"
-#     password = "asdf"
-#     exchange = "zoho-asdf"
+[queue]
+    host = "192.168.13.71"
+    port = 5672
+    user = "asdf"
+    password = "asdf"
+    exchange = "zoho-asdf"
 
 # [cache]
 #     host = "192.168.13.71:6379"

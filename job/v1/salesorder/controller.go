@@ -30,3 +30,14 @@ func GetSalesorderList() {
 		break
 	}
 }
+
+func GetSalesorderListTest() {
+	token, err := auth.GetCode()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	salesorderService := NewSalesorderService()
+	salesorderService.UpdateSalesorder(token, "8581000024483651")
+	salesorderService.UpdateSalesorder(token, "8581000024483677")
+}

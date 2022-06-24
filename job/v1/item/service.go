@@ -10,6 +10,7 @@ import (
 	"time"
 	"zoho-center/core/config"
 	"zoho-center/core/database"
+	"zoho-center/core/queue"
 )
 
 type itemService struct {
@@ -139,6 +140,13 @@ func (s itemService) UpdateItem(token string, itemID string) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	rabbit, _ := queue.GetConn()
+	msg, _ := json.Marshal(itemDetail.Item)
+	err = rabbit.Publish("ItemUpdated", msg)
+	if err != nil {
+		return err
 	}
 	tx.Commit()
 	return nil

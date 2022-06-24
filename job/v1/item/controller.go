@@ -29,3 +29,15 @@ func GetItemList() {
 		}
 	}
 }
+
+func GetItemListTest() {
+	token, err := auth.GetCode()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	itemService := NewItemService()
+	itemService.UpdateItem(token, "8581000023858747")
+	itemService.UpdateItem(token, "8581000023858760")
+	itemService.UpdateItem(token, "8581000023858773")
+}
