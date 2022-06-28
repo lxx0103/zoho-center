@@ -167,7 +167,7 @@ func (s salesorderService) UpdateSalesorder(token string, salesorderID string) e
 	}
 
 	rabbit, _ := queue.GetConn()
-	salesorderDetail.Salesorder.Status = strings.ToUpper(salesorderDetail.Salesorder.Status)
+	// salesorderDetail.Salesorder.Status = strings.ToUpper(salesorderDetail.Salesorder.Status)
 	msg, _ := json.Marshal(salesorderDetail.Salesorder)
 	err = rabbit.Publish("SalesOrderUpdated", msg)
 	if err != nil {
